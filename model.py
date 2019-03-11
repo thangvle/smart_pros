@@ -33,6 +33,41 @@ TODO
 - Create loss function and optimizer (SGD)
 - tf.session
 """
+def conv_relu(inputs, filters, k_size, stride, padding, scope_name):
+
+    # method that does convolution + relu on inputs
+
+    with tf.variable_scope(scope_name, reuse=tf.AUTO_REUSE) as scope:
+        in_channels = inputs.shape[-1]
+        kernel = tf.get_variable('kernel',
+                                [k_size, k_size, in_channels, filters],
+                                initializer=tf.truncated_normal_initializer())
+        biases = tf.get_variable('biases',
+                                [filters],
+                                initializer=tf.random_normal_initializer())
+        conv = tf.nn.conv1d(inputs, kernel, strides=[1, stride, stride, 1], padding=padding)
+    return tf.nn.relu(conv + biases, name=scope.name)
+
+def maxpool(inputs, ksize, stride, padding='VALID', scope_name='pool'):
+    '''A method that does max pooling on inputs'''
+    with tf.variable_scope(scope_name, reuse=tf.AUTO_REUSE) as scope:
+        pool = tf.nn.max_pool(inputs,
+                            ksize=[1, ksize, ksize, 1],
+                            strides=[1, stride, stride, 1],
+                            padding=padding)
+    return pool
+
+def fully_connected(inputs, out_dim, scope_name='fc'):
+    # A fully connected linear layer on inputs
+
+    with tf.variable_scope(scope_name, reuse=tf.AUTO_REUSE) as scope:
+        in_dim = inputs.shape[-1]
+        w = tf.get_variable('weights', [in_dim, out_dim],
+                            initializer=tf.truncated_normal_initializer())
+        b = tf.get_variable('biases', [out_dim],
+                            initializer=tf.constant_initializer(0.0))
+        out = tf.matmul(inputs, w) + b
+    return out
 
 
 class ConvNet(object):
@@ -66,3 +101,5 @@ class ConvNet(object):
                # Initializer for train and test Dataset
                self.train_init = iterator.make_initializer(train_data)
                self.test_init = iterator.make_initializer(test_data)
+
+    def
