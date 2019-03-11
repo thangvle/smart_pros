@@ -48,21 +48,21 @@ class ConvNet(object):
 	self.training = False
 
     def get_data(self):
-	with tf.name_scope('data'):
-        # need to have label with the train_data and test_data
-	    # create dataset
-		train_data = tf.data.Dataset.from_tensor_slices(train)
-        train_data = train_data.shuffle(10000)
-        train_data = train_data.batch(batch_size)
+	       with tf.name_scope('data'):
+               # need to have label with the train_data and test_data
+       	    # create dataset
+       		   train_data = tf.data.Dataset.from_tensor_slices(train)
+               train_data = train_data.shuffle(10000)
+               train_data = train_data.batch(batch_size)
 
-        test_data = tf.data.Dataset.from_tensor_slices(test)
-        test_data = test_data.batch(batch_size)
+               test_data = tf.data.Dataset.from_tensor_slices(test)
+               test_data = test_data.batch(batch_size)
 
-        # creating iterator
-        iterator = tf.data.Iterator.from_structure(train_data.output_types
-                                                    train_data.output_shapes)
-        # reshape array here if needed
+               # creating iterator
+               iterator = tf.data.Iterator.from_structure(train_data.output_types
+                                                           train_data.output_shapes)
+               # reshape array here if needed
 
-        # Initializer for train and test Dataset
-        self.train_init = iterator.make_initializer(train_data)
-        self.test_init = iterator.make_initializer(test_data)
+               # Initializer for train and test Dataset
+               self.train_init = iterator.make_initializer(train_data)
+               self.test_init = iterator.make_initializer(test_data)
