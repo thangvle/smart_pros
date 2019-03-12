@@ -110,16 +110,8 @@ class ConvNet(object):
                         padding='SAME',
                         scope_name='conv1')
         pool1 = maxpool(conv1, 2, 2, 'VALID', 'pool1')
-        conv2 = conv_relu(inputs=pool1,
-                        filters=64,
-                        k_size=5,
-                        stride=1,
-                        padding='SAME',
-                        scope_name='conv2')
-        pool2 = maxpool(conv2, 2, 2, 'VALID', 'pool2')
-        feature_dim = pool2.shape[1] * pool2.shape[2] * pool2.shape[3]
-        pool2 = tf.reshape(pool2, [-1, feature_dim])
-        fc = fully_connected(pool2, 1024, 'fc')
+
+        fc = fully_connected(pool1, 1024, 'fc')
         dropout = tf.nn.dropout(tf.nn.relu(fc), self.keep_prob, name='relu_dropout')
         self.logits = fully_connected(dropout, self.n_classes, 'logits')
 
