@@ -102,4 +102,137 @@ class ConvNet(object):
                self.train_init = iterator.make_initializer(train_data)
                self.test_init = iterator.make_initializer(test_data)
 
-    def
+    def inference(self):
+         conv1 = conv_relu(inputs=self.img,
+                        filters=32,
+                        k_size=5,
+                        stride=1,
+                        padding='SAME',
+                        scope_name='conv1')
+        pool1 = maxpool(conv1, 2, 2, 'VALID', 'pool1')
+        conv2 = conv_relu(inputs=pool1,
+                        filters=64,
+                        k_size=5,
+                        stride=1,
+                        padding='SAME',
+                        scope_name='conv2')
+        pool2 = maxpool(conv2, 2, 2, 'VALID', 'pool2')
+        feature_dim = pool2.shape[1] * pool2.shape[2] * pool2.shape[3]
+        pool2 = tf.reshape(pool2, [-1, feature_dim])
+        fc = fully_connected(pool2, 1024, 'fc')
+        dropout = tf.nn.dropout(tf.nn.relu(fc), self.keep_prob, name='relu_dropout')
+        self.logits = fully_connected(dropout, self.n_classes, 'logits')
+
+    def loss(self):
+        '''
+        define loss function
+        use softmax cross entropy with logits as the loss function
+        compute mean cross entropy, softmax is applied internally
+        '''
+        #
+        with tf.name_scope('loss'):
+            entropy = tf.nn.softmax_cross_entropy_with_logits(labels=self.label, logits=self.logits)
+            self.loss = tf.reduce_mean(entropy, name='loss')
+
+    def optimize(self):
+        '''
+        Define training op
+        using Adam Gradient Descent to minimize cost
+        '''
+        self.opt = tf.train.AdamOptimizer(self.lr).minimize(self.loss,
+                                                global_step=self.gstep)
+
+    def summary(self):
+        '''
+        Create summaries to write on TensorBoard
+        '''
+        with tf.name_scope('summaries'):
+            tf.summary.scalar('loss', self.loss)
+            tf.summary.scalar('accuracy', self.accuracy)
+            tf.summary.histogram('histogram loss', self.loss)
+            self.summary_op = tf.summary.merge_all()
+
+    def eval(self):
+        '''
+        Count the number of right predictions in a batch
+        '''
+        with tf.name_scope('predict'):
+            preds = tf.nn.softmax(self.logits)
+            correct_preds = tf.equal(tf.argmax(preds, 1), tf.argmax(self.label, 1))
+            self.accuracy = tf.reduce_sum(tf.cast(correct_preds, tf.float32))
+
+    def build(self):
+        '''
+        Build the computation graph
+        '''
+        self.get_data()
+        self.inference()
+        self.loss()
+        self.optimize()
+        self.eval()
+        self.summary()
+
+    def train_one_epoch(self, sess, saver, init, writer, epoch, step):
+        start_time = time.time()
+        sess.run(init)
+        self.training = True
+        total_loss = 0
+        n_batches = 0
+        try:
+            while True:
+                _, l, summaries = sess.run([self.opt, self.loss, self.summary_op])
+                writer.add_summary(summaries, global_step=step)
+                if (step + 1) % self.skip_step == 0:
+                    print('Loss at step {0}: {1}'.format(step, l))
+                step += 1
+                total_loss += l
+                n_batches += 1
+        except tf.errors.OutOfRangeError:
+            pass
+        saver.save(sess, 'checkpoints/convnet_mnist/mnist-convnet', step)
+        print('Average loss at epoch {0}: {1}'.format(epoch, total_loss/n_batches))
+        print('Took: {0} seconds'.format(time.time() - start_time))
+        return step
+
+    def eval_once(self, sess, init, writer, epoch, step):
+        start_time = time.time()
+        sess.run(init)
+        self.training = False
+        total_correct_preds = 0
+        try:
+            while True:
+                accuracy_batch, summaries = sess.run([self.accuracy, self.summary_op])
+                writer.add_summary(summaries, global_step=step)
+                total_correct_preds += accuracy_batch
+        except tf.errors.OutOfRangeError:
+            pass
+
+        print('Accuracy at epoch {0}: {1} '.format(epoch, total_correct_preds/self.n_test))
+        print('Took: {0} seconds'.format(time.time() - start_time))
+
+    def train(self, n_epochs):
+        '''
+        The train function alternates between training one epoch and evaluating
+        '''
+        utils.safe_mkdir('checkpoints')
+        utils.safe_mkdir('checkpoints/convnet_mnist')
+        writer = tf.summary.FileWriter('./graphs/convnet', tf.get_default_graph())
+
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            saver = tf.train.Saver()
+            ckpt = tf.train.get_checkpoint_state(os.path.dirname('checkpoints/convnet_mnist/checkpoint'))
+            if ckpt and ckpt.model_checkpoint_path:
+                saver.restore(sess, ckpt.model_checkpoint_path)
+
+            step = self.gstep.eval()
+
+            for epoch in range(n_epochs):
+                step = self.train_one_epoch(sess, saver, self.train_init, writer, epoch, step)
+                self.eval_once(sess, self.test_init, writer, epoch, step)
+        writer.close()
+
+if __name__ == '__main__':
+    model = ConvNet()
+    model.build()
+    model.train(n_epochs=30)
