@@ -10,7 +10,7 @@ filename = "EMG_label_data_muscle1.csv"
 data = pd.read_csv(filename)
 
 # turn time and voltage to 1D array
-data.columns = ["voltage", "time", "label"]
+data.columns = ["time_stamp", "voltage", "time", "label"]
 time = data["time"].values
 voltage = data["voltage"].values
 labels = data["label"].values
