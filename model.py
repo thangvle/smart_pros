@@ -22,15 +22,14 @@ print("label")
 print(labels)
 
 train_data, test_data = train_test_split(data, train_size=0.8)
-print("train_data")
-print(train_data)
-print("test_data")
-print(test_data)
+# create train_voltage, train_labels, test_voltage, test_labels
+train_voltage = train_data["Voltage"].values
+
 
 
 """
 TODO
-
+- Current data shape: (300, 4). Shape on a single line: (1,4)
 - Initialize variable for time and voltage as 1D array
 - Initialize Weight function
 - Create loss function and optimizer (SGD)

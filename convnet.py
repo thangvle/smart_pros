@@ -48,9 +48,15 @@ class ConvNet(object):
 	self.training = False
 
     def get_data(self):
-	       with tf.name_scope('data'):
+        with tf.name_scope('data'):
+            #   read EMG data. Return two tuples of numpy array of
+            #   ((train_voltage, train_labels), (test_voltage, test_labels))
+
+
+
                # need to have label with the train_data and test_data
-       	    # create dataset
+       	       # create dataset
+'''
        		   train_data = tf.data.Dataset.from_tensor_slices(train)
                train_data = train_data.shuffle(10000)
                train_data = train_data.batch(batch_size)
@@ -66,6 +72,8 @@ class ConvNet(object):
                # Initializer for train and test Dataset
                self.train_init = iterator.make_initializer(train_data)
                self.test_init = iterator.make_initializer(test_data)
+'''
+
 
     def inference(self):
          conv1 = conv_relu(inputs=self.img,
