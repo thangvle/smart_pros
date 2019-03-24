@@ -24,7 +24,14 @@ print(labels)
 
 train_data, test_data = train_test_split(data, train_size=0.8)
 # create train_voltage, train_labels, test_voltage, test_labels
-#train_voltage = train_data["Voltage"].values
+train_voltage = train_data["voltage"].values
+train_labels = train_data["label"].values
+test_voltage = test_data["voltage"].values
+test_labels = test_data["label"].values
+
+
+train = (train_voltage, train_labels)
+test = (test_voltage, test_labels)
 
 
 
