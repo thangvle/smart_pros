@@ -42,6 +42,7 @@ TODO
 - figure out the batch size of the inputs (lens()?)
 - Change max_pool, fully_connected if need be
 - look at train one epoch
+- let's run it
 """
 
 def conv_relu(inputs, filters, k_size, stride, padding, scope_name):
@@ -95,28 +96,31 @@ class ConvNet(object):
 
     def get_data(self):
         with tf.name_scope('data'):
-            #   read EMG data. Return two tuples of numpy array of
-            #   ((train_voltage, train_labels), (test_voltage, test_labels))
+            '''
+               read EMG data. Return two tuples of numpy array of
+               ((train_voltage, train_labels), (test_voltage, test_labels))
+                      training_data                   testing_data
+            '''
 
-               # need to have label with the train_data and test_data
-       	       # create dataset
+            training_data = tf.data.Dataset.from_tensor_slices(train)
+            training_data = training_data.shuffle(10000)
+            training_data = training_data.batch(batch_size)
 
-       		   training_data = tf.data.Dataset.from_tensor_slices(train)
-               training_data = training_data.shuffle(10000)
-               training_data = training_data.batch(batch_size)
+            testing_data = tf.data.Dataset.from_tensor_slices(test)
+            testing_data = test_data.batch(batch_size)
 
-               testing_data = tf.data.Dataset.from_tensor_slices(test)
-               testing_data = test_data.batch(batch_size)
+            # creating iterator
+            iterator = tf.data.Iterator.from_structure(training_data.output_types, training_data.output_shapes)
+            voltage, label = iterator.get_next()
 
-               # creating iterator
-               iterator = tf.data.Iterator.from_structure(training_data.output_types, training_data.output_shapes)
-               voltage, label = iterator.get_next()
+            # reshape array here, possibly
 
-               # reshape array here if needed
+            # Initializer for train and test Dataset
+            self.train_init = iterator.make_initializer(training_data)
+            self.test_init = iterator.make_initializer(testing_data)
 
-               # Initializer for train and test Dataset
-               self.train_init = iterator.make_initializer(training_data)
-               self.test_init = iterator.make_initializer(testing_data)
+
+
 
     def inference(self):
          conv1 = conv_relu(inputs=self.voltage,
