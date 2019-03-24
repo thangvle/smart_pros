@@ -84,15 +84,16 @@ def fully_connected(inputs, out_dim, scope_name='fc'):
 
 class ConvNet(object):
     def __init__(self):
-	self.learing_rate = 0.001		# set up learning rate
-	self.batch_size = 300			# split up data in 1 epoch
-	self.keep_prob = tf.constant(0.75)	# probablity
-	self.gstep = tf.Variable(0, dtype=tf.int32,
-				trainable=False, name='global_step')
-	self.n_classes = 10
-	self.skip_step = 20
-	self.n_test = 10000
-	self.training = False
+        self.learing_rate = 0.001		# set up learning rate
+    	self.batch_size = 300			# split up data in 1 epoch
+    	self.keep_prob = tf.constant(0.75)	# probablity
+    	self.gstep = tf.Variable(0, dtype=tf.int32,
+    				trainable=False, name='global_step')
+    	self.n_classes = 10
+    	self.skip_step = 20
+    	self.n_test = 10000
+    	self.training = False
+
 
     def get_data(self):
         with tf.name_scope('data'):
