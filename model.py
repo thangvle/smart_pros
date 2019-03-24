@@ -11,6 +11,7 @@ data = pd.read_csv(filename)
 
 # turn time and voltage to 1D array
 data.columns = ["time_stamp", "voltage", "time", "label"]
+print(data)
 time = data["time"].values
 voltage = data["voltage"].values
 labels = data["label"].values
