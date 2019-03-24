@@ -52,31 +52,28 @@ class ConvNet(object):
             #   read EMG data. Return two tuples of numpy array of
             #   ((train_voltage, train_labels), (test_voltage, test_labels))
 
-
-
                # need to have label with the train_data and test_data
        	       # create dataset
-'''
-       		   train_data = tf.data.Dataset.from_tensor_slices(train)
-               train_data = train_data.shuffle(10000)
-               train_data = train_data.batch(batch_size)
 
-               test_data = tf.data.Dataset.from_tensor_slices(test)
-               test_data = test_data.batch(batch_size)
+       		   training_data = tf.data.Dataset.from_tensor_slices(train)
+               training_data = training_data.shuffle(10000)
+               training_data = training_data.batch(batch_size)
+
+               testing_data = tf.data.Dataset.from_tensor_slices(test)
+               testing_data = test_data.batch(batch_size)
 
                # creating iterator
-               iterator = tf.data.Iterator.from_structure(train_data.output_types
-                                                           train_data.output_shapes)
+               iterator = tf.data.Iterator.from_structure(training_data.output_types, training_data.output_shapes)
+               voltage, label = iterator.get_next()
+
                # reshape array here if needed
 
                # Initializer for train and test Dataset
-               self.train_init = iterator.make_initializer(train_data)
-               self.test_init = iterator.make_initializer(test_data)
-'''
-
+               self.train_init = iterator.make_initializer(training_data)
+               self.test_init = iterator.make_initializer(testing_data)
 
     def inference(self):
-         conv1 = conv_relu(inputs=self.img,
+         conv1 = conv_relu(inputs=self.voltage,
                         filters=32,
                         k_size=5,
                         stride=1,
