@@ -1,3 +1,7 @@
+data = readtable("EMG_new_muscle_3.xlsx");
+trainer = trainClassifier(EMGnewmuscle3);
+
+
 function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % returns a trained classifier and its accuracy. This code recreates the
@@ -162,3 +166,4 @@ correctPredictions = (validationPredictions == response);
 isMissing = ismissing(response);
 correctPredictions = correctPredictions(~isMissing);
 validationAccuracy = sum(correctPredictions)/length(correctPredictions);
+end
