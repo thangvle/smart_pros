@@ -1,6 +1,6 @@
 %shuffling data, has to do in command window
-% random_EMG = EMGrawdataS5(randperm(size(EMGrawdataS5,1), :)); 
+%random_EMG = EMGrawdataS7(randperm(size(EMGrawdataS7,1), :)); 
 
-yfit = fineTree.predictFcn(random_EMG)
+yfit = fineTreeCompact.predictFcn(EMGrawdataS2)
 
 %incorporate output with C code
