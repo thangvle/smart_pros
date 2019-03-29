@@ -34,6 +34,7 @@ train = (train_voltage, train_labels)
 test = (test_voltage, test_labels)
 
 
+
 """
 TODO
 - Current data shape: (300, 4). Shape on a single line: (1,4)
@@ -102,7 +103,11 @@ class ConvNet(object):
                ((train_voltage, train_labels), (test_voltage, test_labels))
                       training_data                   testing_data
             '''
+            '''
+            group training voltage to a place holder
+            group training label to a place holder
 
+            '''
             training_data = tf.data.Dataset.from_tensor_slices(train)
             training_data = training_data.shuffle(10000)
             training_data = training_data.batch(batch_size)
