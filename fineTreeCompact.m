@@ -1,3 +1,11 @@
+load('fineTreeClassification.mat')
+trainingData = EMGrawdataS3
+
+
+
+
+
+
 function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % returns a trained classifier and its accuracy. This code recreates the
