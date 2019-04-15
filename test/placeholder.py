@@ -14,7 +14,7 @@ with tf.Session() as sess:
 
 a = tf.add(2, 5)
 b = tf.multiply(a, 3)
-
+writer2 = tf.summary.FileWriter('graph/feed_dict', tf.get_default_graph())
 with tf.Session() as sess:
     print(sess.run(b))
     print(sess.run(b, feed_dict = {a:15}))
