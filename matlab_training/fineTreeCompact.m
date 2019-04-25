@@ -1,9 +1,5 @@
 load('fineTreeClassification.mat')
-trainingData = EMGrawdataS3
-
-
-
-
+trainingData = EMGrawdataS3;
 
 
 function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
@@ -166,3 +162,4 @@ correctPredictions = (validationPredictions == response);
 isMissing = ismissing(response);
 correctPredictions = correctPredictions(~isMissing);
 validationAccuracy = sum(correctPredictions)/length(correctPredictions);
+end

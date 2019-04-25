@@ -12,9 +12,9 @@ with tf.Session() as sess:
     print(sess.run(c, {a: [1, 2, 3]}))    # result c = [6 7 8]
     writer.close()
 
-a = tf.add(2, 5)
-b = tf.multiply(a, 3)
+a = tf.add(2, 5) # a =7
+b = tf.multiply(a, 3) # b = a * 3 = 21
 writer2 = tf.summary.FileWriter('graph/feed_dict', tf.get_default_graph())
 with tf.Session() as sess:
-    print(sess.run(b))
-    print(sess.run(b, feed_dict = {a:15}))
+    print(sess.run(b)) # compute b
+    print(sess.run(b, feed_dict = {a:15})) # set a = 15, compute b 
