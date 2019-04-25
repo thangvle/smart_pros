@@ -114,7 +114,7 @@ for fold = 1:KFolds
     trainingPredictors = predictors(cvp.training(fold), :);
     trainingResponse = response(cvp.training(fold), :);
     foldIsCategoricalPredictor = isCategoricalPredictor;
-    
+
     % Apply a PCA to the predictor matrix.
     % Run PCA on numeric predictors only. Categorical predictors are passed through PCA untouched.
     isCategoricalPredictorBeforePCA = foldIsCategoricalPredictor;
@@ -130,7 +130,7 @@ for fold = 1:KFolds
     pcaCoefficients = pcaCoefficients(:,1:numComponentsToKeep);
     trainingPredictors = [array2table(pcaScores(:,1:numComponentsToKeep)), trainingPredictors(:, foldIsCategoricalPredictor)];
     foldIsCategoricalPredictor = [false(1,numComponentsToKeep), true(1,sum(foldIsCategoricalPredictor))];
-    
+
     % Train a classifier
     % This code specifies all the classifier options and trains the classifier.
     classificationTree = fitctree(...
@@ -140,18 +140,18 @@ for fold = 1:KFolds
         'MaxNumSplits', 100, ...
         'Surrogate', 'off', ...
         'ClassNames', categorical({'Active'; 'Rest'}));
-    
+
     % Create the result struct with predict function
     pcaTransformationFcn = @(x) [ array2table((table2array(varfun(@double, x(:, ~isCategoricalPredictorBeforePCA))) - pcaCenters) * pcaCoefficients), x(:,isCategoricalPredictorBeforePCA) ];
     treePredictFcn = @(x) predict(classificationTree, x);
     validationPredictFcn = @(x) treePredictFcn(pcaTransformationFcn(x));
-    
+
     % Add additional fields to the result struct
-    
+
     % Compute validation predictions
     validationPredictors = predictors(cvp.test(fold), :);
     [foldPredictions, foldScores] = validationPredictFcn(validationPredictors);
-    
+
     % Store predictions in the original order
     validationPredictions(cvp.test(fold), :) = foldPredictions;
     validationScores(cvp.test(fold), :) = foldScores;
