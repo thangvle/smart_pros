@@ -1,7 +1,0 @@
-%shuffling data, has to do in command window
-random_EMG = EMGrawdataS7(randperm(size(EMGrawdataS7,1), :)); 
-
-yfit = fineTree.predictFcn(EMGrawdataS);
-
-
-%incorporate output with C code

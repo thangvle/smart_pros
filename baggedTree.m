@@ -2,6 +2,7 @@ data = readtable("EMG_new_muscle_3.xlsx");
 trainer = trainClassifier(EMGnewmuscle3);
 
 
+
 function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % returns a trained classifier and its accuracy. This code recreates the
@@ -47,9 +48,10 @@ function [trainedClassifier, validationAccuracy] = trainClassifier(trainingData)
 % Extract predictors and response
 % This code processes the data into the right shape for training the
 % model.
-inputTable = trainingData;
-predictorNames = {'Timestamp', 'VoltagemV', 'Time'};
-predictors = inputTable(:, predictorNames);
+
+inputTable = trainingData;      %input data
+predictorNames = {'Timestamp', 'VoltagemV', 'Time'};    % specify feature name
+predictors = inputTable(:, predictorNames);             % specify feature 
 response = inputTable.Categories;
 isCategoricalPredictor = [true, false, true];
 
