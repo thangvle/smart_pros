@@ -1,5 +1,6 @@
-import serial 
+# this code will write serial input to arduino to control the LED
 
-ser = serial.Serial('COM1', 9800, timeout=1)
-ser.write(b'H')
-ser.write(b'L')
+import pyserial, time
+
+arduino = serial.Serial('/dev/ttyACM0',115200,timeout=1)
+time.sleep(1)
