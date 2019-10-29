@@ -1,9 +1,9 @@
 // These constants won't change. They're used to give names to the pins used:
-const int analogInPin1 = A1;  // Analog input pin that the potentiometer is attached to
-const int analogInPin2 = A2;  // Analog input pin that the potentiometer is attached to
-const int analogInPin3 = A3;  // Analog input pin that the potentiometer is attached to
-const int analogInPin4 = A4;  // Analog input pin that the potentiometer is attached to
-const int analogInPin5 = A5;  // Analog input pin that the potentiometer is attached to
+const double analogInPin1 = A1;  // Analog input pin that the potentiometer is attached to
+const double analogInPin2 = A2;  // Analog input pin that the potentiometer is attached to
+const double analogInPin3 = A3;  // Analog input pin that the potentiometer is attached to
+const double analogInPin4 = A4;  // Analog input pin that the potentiometer is attached to
+const double analogInPin5 = A5;  // Analog input pin that the potentiometer is attached to
 unsigned long currenttime;
 double sensorValue1 = 0;        // value read from the pot
 double sensorValue2 = 0;        // value read from the pot
@@ -36,7 +36,7 @@ void setup() {
 }
 void loop() {
 
-  while(currenttime<100){
+  while(1){
   // read the analog in value:
     sensorValue1 = analogRead(analogInPin1);
     sensorValue2 = analogRead(analogInPin2);
@@ -44,9 +44,9 @@ void loop() {
     sensorValue4 = analogRead(analogInPin4);
     sensorValue5 = analogRead(analogInPin5);
     currenttime=millis();
-    //Serial.println(currenttime);
+    Serial.print(currenttime);
     //Serial.print(" miliseconds");
-    //Serial.print("\t");
+    Serial.print("\t");
     Serial.print(sensorValue1*5/1023);
     Serial.print("\t");
     Serial.print(sensorValue2*5/1023);
@@ -55,8 +55,9 @@ void loop() {
     Serial.print("\t");
     Serial.print(sensorValue4*5/1023);
     Serial.print("\t");
-    Serial.print(sensorValue5*5/1023);
-    Serial.println();
+    Serial.println(sensorValue5*5/1023);
+    //Serial.println();    // read digit only input from arduino
+
     delay(10);
     
     if (Serial.available() > 0) {
