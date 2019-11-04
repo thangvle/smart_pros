@@ -8,7 +8,7 @@ import numpy as np
 from sklearn import svm
 import matplotlib.pyplot as plt
 
-arduino = serial.Serial('/dev/ttyACM1',115200,timeout=1)
+arduino = serial.Serial('/dev/ttyACM0',115200,timeout=1)
 
 
 time.sleep(1)
@@ -17,26 +17,34 @@ filename = "EMG_svm_pickle.pkl"
 svm_clf = pickle.load(open(filename, 'rb'))
 # initialize a list to hold data
 
-df = pd.DataFrame(columns=['time','muscle1','muscle2','muscle3','muscle4','muscle5'])
+df = pd.DataFrame(columns=['x', 'y','z','muscle1','muscle2','muscle3'])
 raw_input = arduino.readline()  # read input from arduino
 time.sleep(1)   # skip the first few bad data
-for i in range(3,50):
-    raw_input = arduino.readline()      # actual arduino reading
 
-    input_decoded = raw_input.decode()  # decode raw data to string
-    # converting string to float
-    data = np.array([x for x in input_decoded.rstrip().split("\t")], dtype=np.float32)
+while True:
+    for i in range(0,50):
+        raw_input = arduino.readline()      # actual arduino reading
 
-    # attach the data to the dataframe
-    # does the dataframe change when append new data?
+        input_decoded = raw_input.decode()  # decode raw data to string
+        # converting string to float
+        data = np.array([x for x in input_decoded.rstrip().split("\t")], dtype=np.float32)
 
-    df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
+        # attach the data to the dataframe
+        # does the dataframe change when append new data?
 
+        df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
+        print(df)
+'''
+        y_pred = svm_clf.predict(df)
+        print(y_pred)
+        for i in y_pred:
+            if i == 'rest':
+                arduino.write(b'R')
+            elif i == 'active':
+                arduino.write(b'A')
 
-print(df)
+'''
 
-y_pred = svm_clf.predict(df)
-print(y_pred)
 #df = pd.DataFrame()
 
 #plt.plot(cleandata)
