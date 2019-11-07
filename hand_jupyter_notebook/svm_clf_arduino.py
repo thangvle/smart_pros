@@ -21,19 +21,21 @@ df = pd.DataFrame(columns=['x', 'y','z','muscle1','muscle2','muscle3'])
 raw_input = arduino.readline()  # read input from arduino
 time.sleep(1)   # skip the first few bad data
 
-while True:
-    for i in range(0,50):
-        raw_input = arduino.readline()      # actual arduino reading
 
-        input_decoded = raw_input.decode()  # decode raw data to string
-        # converting string to float
-        data = np.array([x for x in input_decoded.rstrip().split("\t")], dtype=np.float32)
 
-        # attach the data to the dataframe
-        # does the dataframe change when append new data?
+for i in range(0,1000):
+    raw_input = arduino.readline()      # actual arduino reading
 
-        df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
-        print(df)
+    input_decoded = raw_input.decode()  # decode raw data to string
+    # converting string to float
+    data = np.array([x for x in input_decoded.rstrip().split("\t")], dtype=np.float32)
+
+    # attach the data to the dataframe
+    # does the dataframe change when append new data?
+
+    df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
+
+df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_acc.csv')
 '''
         y_pred = svm_clf.predict(df)
         print(y_pred)
