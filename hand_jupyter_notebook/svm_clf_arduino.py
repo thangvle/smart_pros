@@ -23,7 +23,7 @@ time.sleep(1)   # skip the first few bad data
 
 
 
-for i in range(0,1000):
+for i in range(0,10000):
     raw_input = arduino.readline()      # actual arduino reading
 
     input_decoded = raw_input.decode()  # decode raw data to string
@@ -34,8 +34,9 @@ for i in range(0,1000):
     # does the dataframe change when append new data?
 
     df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
-
-df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_acc.csv')
+    print(df)
+# export to csv. Comment t variables. Maximum is 2048 his code out if not need to
+#df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_acc.csv')
 '''
         y_pred = svm_clf.predict(df)
         print(y_pred)
