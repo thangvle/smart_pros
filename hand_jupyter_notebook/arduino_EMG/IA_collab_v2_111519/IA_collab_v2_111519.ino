@@ -2,7 +2,8 @@
 
 // to declare for Blue LED or train/activation mode
 int Act_Train_inPin = 3;         // the number of the input pin
-int Act_Train_outPin = 11;       // the number of the output pin
+int Act_Train_outPin = 11;       // the number of the output pin. Where does this pin goes to? 
+
 
 int Act_train_state = LOW;      // the current Act_train_state of the output pin
 int Act_train_reading;           // the current Act_train_reading from the input pin
@@ -32,8 +33,10 @@ unsigned long nextstop = 0;
 
 // to declare thresholds
 // These constants won't change. They're used to give names to the pins used:
-const int graspPin1 =  2;      // the number of the grasping mode 1 activation
-const int graspPin2 =  1;      // the number of the grasping mode 2 activation
+//const int graspPin1 =  2;      // the number of the grasping mode 1 activation
+//const int graspPin2 =  4;      // the number of the grasping mode 2 activation
+
+const int ledPin = 2;             // green led 
 
 const int analogInPin0 = A0;  // Analog input pin that the accelerometer is attached to
 const int analogInPin1 = A1;  // Analog input pin that the accelerometer is attached to
@@ -43,9 +46,9 @@ const int analogInPin4 = A4;  // Analog input pin that the for EMG2
 const int analogInPin5 = A5;  // Analog input for EMG3 (FIFTH position from left, await real time confirmation)
 unsigned long currenttime;
 
-double Ac1 = 0;      // Accelerometer x 
-double Ac2 = 0;      // Accelerometer y 
-double Ac3 = 0;      // Acccelerometer z 
+double Ac1 = 0;      // Accelerometer x
+double Ac2 = 0;      // Accelerometer y
+double Ac3 = 0;      // Acccelerometer z
 double EMG1 = 0;      // value read from the pot
 double EMG2 = 0;      // value read from the pot
 double EMG3 = 0;      // value read from the pot
@@ -90,6 +93,8 @@ double M2in_EMG1 = 0;
 double M2in_EMG2 = 0;
 double M2in_EMG3 = 0;
 
+int incomingByte; // Serial input for led control 
+
 void setup()
 {
 
@@ -103,13 +108,16 @@ void setup()
   // for threshold
   Serial.begin(115200);  //probably boadrate here
   // initialize the Grasping pins as outputs:
-  pinMode(graspPin1, OUTPUT);
-  pinMode(graspPin2, OUTPUT);
+  //pinMode(graspPin1, OUTPUT);
+  //pinMode(graspPin2, OUTPUT);
+  pinMode(ledPin, OUTPUT); 
 }
 
 void loop()
 {
-  
+  incomingByte = Serial.read(); 
+
+/*
   // Read if button is pressed
   Act_train_reading = digitalRead(Act_Train_inPin);
 
@@ -130,22 +138,22 @@ void loop()
 
   digitalWrite(Act_Train_outPin, Act_train_state); //or the blue LED
   ActTrain_prev = Act_train_reading;
-
+*/
   /*
-  // realtime ctl signaling
-  Serial.print("0");
-  Serial.print("\t");
-  Serial.print("0");
-  Serial.print("\t");
-  Serial.print("0");
-  Serial.print("\t");
-  Serial.print("0");
-  Serial.print("\t");
-  Serial.print("0");
-  Serial.print("\t");
-  Serial.println("0");
-  */ 
-  
+    // realtime ctl signaling
+    Serial.print("0");
+    Serial.print("\t");
+    Serial.print("0");
+    Serial.print("\t");
+    Serial.print("0");
+    Serial.print("\t");
+    Serial.print("0");
+    Serial.print("\t");
+    Serial.print("0");
+    Serial.print("\t");
+    Serial.println("0");
+  */
+
   // start training
   //
   if (Act_train_state == HIGH)
@@ -164,12 +172,34 @@ void loop()
     Serial.print("0");
     Serial.print("\t");
     Serial.println("0");
-    
-    nextstop = millis() + 10000;
+
+
+
+    // collect input for labeling rest mode
+    Serial.print(Ac1);
+    Serial.print("\t");
+    Ac2 = analogRead(analogInPin1);
+    Serial.print(Ac2);
+    Serial.print("\t");
+    Ac3 = analogRead(analogInPin2);
+    Serial.print(Ac3);
+    Serial.print("\t");
+    EMG1 = analogRead(analogInPin3);
+    Serial.print(EMG1);
+    Serial.print("\t");
+    EMG2 = analogRead(analogInPin4);
+    Serial.print(EMG2);
+    Serial.print("\t");
+    EMG3 = analogRead(analogInPin5);
+    Serial.println(EMG3);
+
     while (millis() < nextstop)
     {
-      digitalWrite(YellowLEDPin, LOW); // this is when we will calibrate rest mode for 10s if necessary
+      digitalWrite(YellowLEDPin, LOW); // this is when we will calibrate rest mode for 5s if necessary
+
+
     }
+    nextstop = millis() + 10000;
     digitalWrite(YellowLEDPin, HIGH); // this signals the end of rest train mode and start grasp mode 1
 
     // train grasp mode 1 for 5s, turn on yellow LED for 5s
@@ -210,46 +240,48 @@ void loop()
       EMG3M1 = analogRead(analogInPin5);
       Serial.println(EMG3M1);
 
-      // define standard thresholds for Grasping mode 1
-      // let's define max
-      if (Ac1M1 > M1ax_Ac1) {
+      /*
+        // define standard thresholds for Grasping mode 1
+        // let's define max
+        if (Ac1M1 > M1ax_Ac1) {
         M1ax_Ac1 = Ac1M1;
-      }
-      if (Ac2M1 > M1ax_Ac2) {
+        }
+        if (Ac2M1 > M1ax_Ac2) {
         M1ax_Ac2 = Ac2M1;
-      }
-      if (Ac3M1 > M1ax_Ac3) {
+        }
+        if (Ac3M1 > M1ax_Ac3) {
         M1ax_Ac3 = Ac3M1;
-      }
-      if (EMG1M1 > M1ax_EMG1) {
+        }
+        if (EMG1M1 > M1ax_EMG1) {
         M1ax_EMG1 = EMG1M1;
-      }
-      if (EMG2M1 > M1ax_EMG2) {
+        }
+        if (EMG2M1 > M1ax_EMG2) {
         M1ax_EMG2 = EMG2M1;
-      }
-      if (EMG3M1 > M1ax_EMG3) {
+        }
+        if (EMG3M1 > M1ax_EMG3) {
         M1ax_EMG3 = EMG3M1;
-      }
+        }
 
-      // let's define min
-      if (Ac1M1 < M1in_Ac1) {
+        // let's define min
+        if (Ac1M1 < M1in_Ac1) {
         M1in_Ac1 = Ac1M1;
-      }
-      if (Ac2M1 < M1in_Ac2) {
+        }
+        if (Ac2M1 < M1in_Ac2) {
         M1in_Ac2 = Ac2M1;
-      }
-      if (Ac3M1 < M1in_Ac3) {
+        }
+        if (Ac3M1 < M1in_Ac3) {
         M1in_Ac3 = Ac3M1;
-      }
-      if (EMG1M1 < M1in_EMG1) {
+        }
+        if (EMG1M1 < M1in_EMG1) {
         M1in_EMG1 = EMG1M1;
-      }
-      if (EMG2M1 < M1in_EMG2) {
+        }
+        if (EMG2M1 < M1in_EMG2) {
         M1in_EMG2 = EMG2M1;
-      }
-      if (EMG3M1 < M1in_EMG3) {
+        }
+        if (EMG3M1 < M1in_EMG3) {
         M1in_EMG3 = EMG3M1;
-      }
+        }
+      */
     }
     digitalWrite(YellowLEDPin, LOW); // this signals the end of grasp mode 1
 
@@ -300,54 +332,53 @@ void loop()
       Serial.println(EMG3M2);
 
       /*
-      // define standard thresholds for Grasping mode 2
-      // let's define max
-      if (Ac1M2 > M2ax_Ac1) {
+        // define standard thresholds for Grasping mode 2
+        // let's define max
+        if (Ac1M2 > M2ax_Ac1) {
         M2ax_Ac1 = Ac1M2;
-      }
-      if (Ac2M2 > M2ax_Ac2) {
+        }
+        if (Ac2M2 > M2ax_Ac2) {
         M2ax_Ac2 = Ac2M2;
-      }
-      if (Ac3M2 > M2ax_Ac3) {
+        }
+        if (Ac3M2 > M2ax_Ac3) {
         M2ax_Ac3 = Ac3M2;
-      }
-      if (EMG1M2 > M2ax_EMG1) {
+        }
+        if (EMG1M2 > M2ax_EMG1) {
         M2ax_EMG1 = EMG1M2;
-      }
-      if (EMG2M2 > M2ax_EMG2) {
+        }
+        if (EMG2M2 > M2ax_EMG2) {
         M2ax_EMG2 = EMG2M2;
-      }
-      if (EMG3M2 > M2ax_EMG3) {
+        }
+        if (EMG3M2 > M2ax_EMG3) {
         M2ax_EMG3 = EMG3M2;
-      }
+        }
 
-      // let's define min
-      if (Ac1M2 < M2in_Ac1) {
+        // let's define min
+        if (Ac1M2 < M2in_Ac1) {
         M2in_Ac1 = Ac1M2;
-      }
-      if (Ac2M2 < M2in_Ac2) {
+        }
+        if (Ac2M2 < M2in_Ac2) {
         M2in_Ac2 = Ac2M2;
-      }
-      if (Ac3M2 < M2in_Ac3) {
+        }
+        if (Ac3M2 < M2in_Ac3) {
         M2in_Ac3 = Ac3M2;
-      }
-      if (EMG1M2 < M2in_EMG1) {
+        }
+        if (EMG1M2 < M2in_EMG1) {
         M2in_EMG1 = EMG1M2;
-      }
-      if (EMG2M2 < M2in_EMG2) {
+        }
+        if (EMG2M2 < M2in_EMG2) {
         M2in_EMG2 = EMG2M2;
-      }
-      if (EMG3M2 < M2in_EMG3) {
+        }
+        if (EMG3M2 < M2in_EMG3) {
         M2in_EMG3 = EMG3M2;
-      }
-      /*
-       * 
-       */
+        }
+        /*
+
+      */
     }
     digitalWrite(YellowLEDPin, LOW); // this signals the end of grasp mode 2
 
     Act_train_state = LOW; // this signals the end of all train mode
-
 
     // realtime ctl signaling
     Serial.print("0");
@@ -361,11 +392,14 @@ void loop()
     Serial.print("0");
     Serial.print("\t");
     Serial.println("0");
-  }
-  // start controlling
-  // read the analog in value:
-  Ac1 = analogRead(analogInPin0);
 
+
+  }
+
+
+
+  /*
+  Ac1 = analogRead(analogInPin0);
   Serial.print(Ac1);
   Serial.print("\t");
   Ac2 = analogRead(analogInPin1);
@@ -383,7 +417,8 @@ void loop()
   EMG3 = analogRead(analogInPin5);
   Serial.println(EMG3);
 
-  
+  */
+  /*
   // check for mode 2
   if (Ac1 > M2in_Ac1 && Ac1 < M2ax_Ac1 && Ac2 > M2in_Ac2 && Ac2 < M2ax_Ac2 && Ac3 > M2in_Ac3 && Ac3 < M2ax_Ac3 &&
       EMG1 > M2in_EMG1 && EMG1 < M2ax_EMG1 && EMG2 > M2in_EMG2 && EMG2 < M2ax_EMG2 && EMG3 > M2in_EMG3 && EMG3 < M2ax_EMG3)
@@ -414,6 +449,12 @@ void loop()
     digitalWrite(graspPin1, LOW);
   }
 
-
+  */
+  if (incomingByte='H'){
+    digitalWrite(ledPin, HIGH); 
+  }
+  if (incomingByte='L'){
+    digitalWrite(ledPin, LOW);
+  }
 
 }

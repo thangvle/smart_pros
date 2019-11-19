@@ -11,17 +11,12 @@ import matplotlib.pyplot as plt
 arduino = serial.Serial('/dev/ttyACM0',115200,timeout=1)
 
 
-time.sleep(1)
-# open svm classification model
-filename = "EMG_svm_pickle.pkl"
-svm_clf = pickle.load(open(filename, 'rb'))
+
 # initialize a list to hold data
 
 df = pd.DataFrame(columns=['x', 'y','z','muscle1','muscle2','muscle3'])
 raw_input = arduino.readline()  # read input from arduino
 time.sleep(1)   # skip the first few bad data
-
-
 
 for i in range(0,10000):
     raw_input = arduino.readline()      # actual arduino reading
@@ -34,9 +29,19 @@ for i in range(0,10000):
     # does the dataframe change when append new data?
 
     df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
-    print(df)
+    #print(df)
+
+df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_grip.csv')
+
+
+'''
+for i in range(5):
+    arduino.write(b'H')
+    time.sleep(1)
+    arduino.write(b'L')
+    time.sleep(1)
 # export to csv. Comment t variables. Maximum is 2048 his code out if not need to
-#df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_acc.csv')
+'''
 '''
         y_pred = svm_clf.predict(df)
         print(y_pred)
@@ -47,6 +52,7 @@ for i in range(0,10000):
                 arduino.write(b'A')
 
 '''
+
 
 #df = pd.DataFrame()
 
