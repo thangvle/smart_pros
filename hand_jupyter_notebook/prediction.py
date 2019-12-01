@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # initialize arduino object and port
 arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
-arduino_command = serial.Serial('dev/ttyACM1',115200, timeout=1)
+#arduino_command = serial.Serial('dev/ttyACM1',115200, timeout=1)
 # load svm model
 filename = "/home/spencelab/Documents/smart_pros/hand_jupyter_notebook/emg_svm_model.pkl"
 emg_model = pickle.load(open(filename, 'rb'))
@@ -19,7 +19,7 @@ emg_model = pickle.load(open(filename, 'rb'))
 # initialize a list to hold data
 
 df = pd.DataFrame(columns=['x', 'y','z','muscle1','muscle2','muscle3'])
-raw_input = arduino.readline()  # read input from arduino
+raw_input = arduino_reader.readline()  # read input from arduino
 time.sleep(1)   # skip the first few bad data
 
 while(1):
@@ -33,9 +33,9 @@ while(1):
     # does the dataframe change when append new data?
 
     df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
-    #print(df)
+    print(df.tail(1))
     mode = emg_model.predict(df.tail(1))
-    print(mode)
+    #print(mode)
 
 
 '''

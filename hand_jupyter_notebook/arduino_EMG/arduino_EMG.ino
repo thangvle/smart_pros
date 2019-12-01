@@ -59,7 +59,23 @@ void loop() {
     //Serial.println();    // read digit only input from arduino
 
     delay(10);
-    
-     
   }
+
+  void loop() {
+  // see if there's incoming serial data:
+  if (Serial.available() > 0) {
+    // read the oldest byte in the serial buffer:
+    incomingByte = Serial.read();
+    // if it's a capital H (ASCII 72), turn on the LED:
+    if (incomingByte == 'A') {
+      digitalWrite(ledPin3, HIGH);
+      digitalWrite(ledPin4, LOW);
+    }
+    // if it's an L (ASCII 76) turn off the LED:
+    if (incomingByte == 'R') {
+      digitalWrite(ledPin3, LOW);
+      digitalWrite(ledPin4, HIGH);
+    }
+  }
+}
 }

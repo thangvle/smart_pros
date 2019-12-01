@@ -52,7 +52,9 @@ svc = svm.SVC(kernel='linear', C=C).fit(x_train, y_train)
 rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=C).fit(x_train, y_train)
 poly_svc = svm.SVC(kernel='poly', degree=3, C=C).fit(x_train, y_train)
 
-
+y_pred = rbf_svc.predict(x_test)
+print(x_test)
+print(y_pred)
 '''
 x_min, x_max = x_train[:, 0].min() - 1, x_train[:, 0].max() + 1
 y_min, y_max = x_train[:, 1].min() - 1, x_train[:, 1].max() + 1
