@@ -60,18 +60,6 @@ void loop() {
 
     delay(10);
     
-    if (Serial.available() > 0) {
-      incomingByte = Serial.read();
-      if (incomingByte == 'A') {
-        digitalWrite(led2, HIGH);
-        digitalWrite(led3, LOW);
-      }
-      if (incomingByte == 'R'){
-        digitalWrite(led2, LOW);
-        digitalWrite(led3, HIGH); 
-      }
-    }  
+     
   }
 }
-
-
