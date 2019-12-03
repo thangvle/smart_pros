@@ -1,10 +1,12 @@
 // These constants won't change. They're used to give names to the pins used:
+const double analogInPin0 = A0;  // Analog input pin that the potentiometer is attached to
 const double analogInPin1 = A1;  // Analog input pin that the potentiometer is attached to
 const double analogInPin2 = A2;  // Analog input pin that the potentiometer is attached to
 const double analogInPin3 = A3;  // Analog input pin that the potentiometer is attached to
 const double analogInPin4 = A4;  // Analog input pin that the potentiometer is attached to
 const double analogInPin5 = A5;  // Analog input pin that the potentiometer is attached to
 unsigned long currenttime;
+double sensorValue0 = 0;
 double sensorValue1 = 0;        // value read from the pot
 double sensorValue2 = 0;        // value read from the pot
 double sensorValue3 = 0;        // value read from the pot
@@ -38,44 +40,30 @@ void loop() {
 
   while(1){
   // read the analog in value:
+    sensorValue0 = analogRead(analogInPin0);
     sensorValue1 = analogRead(analogInPin1);
     sensorValue2 = analogRead(analogInPin2);
     sensorValue3 = analogRead(analogInPin3);
     sensorValue4 = analogRead(analogInPin4);
     sensorValue5 = analogRead(analogInPin5);
     currenttime=millis();
-    Serial.print(currenttime);
+    //Serial.print(currenttime);
     //Serial.print(" miliseconds");
+    Serial.print(sensorValue0);
     Serial.print("\t");
-    Serial.print(sensorValue1*5/1023);
+    Serial.print(sensorValue1);
     Serial.print("\t");
-    Serial.print(sensorValue2*5/1023);
+    Serial.print(sensorValue2);
     Serial.print("\t");
-    Serial.print(sensorValue3*5/1023);
+    Serial.print(sensorValue3);
     Serial.print("\t");
-    Serial.print(sensorValue4*5/1023);
+    Serial.print(sensorValue4);
     Serial.print("\t");
-    Serial.println(sensorValue5*5/1023);
+    Serial.println(sensorValue5);
     //Serial.println();    // read digit only input from arduino
 
     delay(10);
   }
 
-  void loop() {
-  // see if there's incoming serial data:
-  if (Serial.available() > 0) {
-    // read the oldest byte in the serial buffer:
-    incomingByte = Serial.read();
-    // if it's a capital H (ASCII 72), turn on the LED:
-    if (incomingByte == 'A') {
-      digitalWrite(ledPin3, HIGH);
-      digitalWrite(ledPin4, LOW);
-    }
-    // if it's an L (ASCII 76) turn off the LED:
-    if (incomingByte == 'R') {
-      digitalWrite(ledPin3, LOW);
-      digitalWrite(ledPin4, HIGH);
-    }
-  }
-}
+
 }
