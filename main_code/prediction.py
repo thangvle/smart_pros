@@ -9,12 +9,18 @@ from sklearn import svm
 import matplotlib.pyplot as plt
 
 # initialize arduino object and port
+<<<<<<< HEAD:hand_jupyter_notebook/prediction.py
 #arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
 arduino_reader = serial.Serial('/dev/cu.usbmodem1411302',115200,timeout=1)
 arduino_command = serial.Serial('/dev/cu.usbmodem1411201', 115200, timeout=1) 
+=======
+arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
+#arduino_reader = serial.Serial('/dev/cu.usbmodem14502',115200,timeout=1)
+#arduino_command = serial.Serial('/dev/cu.usbmodem14101', 115200, timeout=1)
+>>>>>>> 65858de485e9942ff003f2ce38b957e3e486a45f:main_code/prediction.py
 #arduino_command = serial.Serial('dev/ttyACM1',115200, timeout=1)
 # load svm model
-filename = "/Users/nhok2303/Desktop/github/smart_pros/hand_jupyter_notebook/emg_svm_model.pkl"
+filename = "/home/spencelab/Documents/smart_pros/main_code/emg_svm_model.pkl"
 emg_model = pickle.load(open(filename, 'rb'))
 
 
@@ -33,7 +39,7 @@ while(1):
 
     # attach the data to the dataframe
     # does the dataframe change when append new data?
-    
+
     df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
     print(df.tail(1))
     mode = emg_model.predict(df.tail(1))
