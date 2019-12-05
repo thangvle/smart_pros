@@ -8,31 +8,43 @@ import numpy as np
 from sklearn import svm
 import matplotlib.pyplot as plt
 
-arduino = serial.Serial('/dev/ttyACM0',115200,timeout=1)
-
-
+arduino = serial.Serial('/dev/cu.usbmodem14502',115200,timeout=1)
 
 # initialize a list to hold data
+'''
+mode_1 = np.array([0,0,0,0,0,1])
+mode_2 = np.array([0,0,0,0,0,2])
+rest = np.array([0,0,0,0,0,3])
+prediction = np.array([0,0,0,0,0,0])
+label = ['1','2','3']
+'''
+'''
+mode 4 real time prediction
+mode 1 grasp 1 
+mode 2 grasp 2 
+mode 3 rest 
+'''
+
 
 df = pd.DataFrame(columns=['x', 'y','z','muscle1','muscle2','muscle3'])
 raw_input = arduino.readline()  # read input from arduino
 time.sleep(1)   # skip the first few bad data
 
-for i in range(0,10000):
+for i in range(0,50000):
     raw_input = arduino.readline()      # actual arduino reading
 
     input_decoded = raw_input.decode()  # decode raw data to string
     # converting string to float
     data = np.array([x for x in input_decoded.rstrip().split("\t")], dtype=np.float32)
 
-    # attach the data to the dataframe
-    # does the dataframe change when append new data?
+    # detect training / prediction mode
 
     df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
+    if 
     #print(df)
 
-df.to_csv(r'/home/camera/Documents/smart_pros/hand_jupyter_notebook/emg_grip.csv')
-
+df.to_csv(r'/Users/nhok2303/Desktop/github/smart_pros/main_code/emg_with_label.csv')
+print("saved to emg_with_label.csv")
 
 '''
 for i in range(5):

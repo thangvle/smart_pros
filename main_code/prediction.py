@@ -9,18 +9,15 @@ from sklearn import svm
 import matplotlib.pyplot as plt
 
 # initialize arduino object and port
-<<<<<<< HEAD:hand_jupyter_notebook/prediction.py
 #arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
-arduino_reader = serial.Serial('/dev/cu.usbmodem1411302',115200,timeout=1)
-arduino_command = serial.Serial('/dev/cu.usbmodem1411201', 115200, timeout=1) 
-=======
-arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
+arduino_reader = serial.Serial('/dev/cu.usbmodem14502',115200,timeout=1)
+arduino_command = serial.Serial('/dev/cu.usbmodem14101', 115200, timeout=1) 
+#arduino_reader = serial.Serial('/dev/ttyACM0',115200,timeout=1)
 #arduino_reader = serial.Serial('/dev/cu.usbmodem14502',115200,timeout=1)
 #arduino_command = serial.Serial('/dev/cu.usbmodem14101', 115200, timeout=1)
->>>>>>> 65858de485e9942ff003f2ce38b957e3e486a45f:main_code/prediction.py
 #arduino_command = serial.Serial('dev/ttyACM1',115200, timeout=1)
 # load svm model
-filename = "/home/spencelab/Documents/smart_pros/main_code/emg_svm_model.pkl"
+filename = "/Users/nhok2303/Desktop/github/smart_pros/main_code/emg_svm_model.pkl"
 emg_model = pickle.load(open(filename, 'rb'))
 
 
@@ -45,11 +42,11 @@ while(1):
     mode = emg_model.predict(df.tail(1))
     print(mode)
     
-    if(mode == "hold"):
+    if(mode == "1"):
         arduino_command.write(b'H')
-    if(mode == "grip"):
+    if(mode == "2"):
         arduino_command.write(b'G')
-    if(mode == "rest"):
+    if(mode == "3"):
         arduino_command.write(b'R')
     
 

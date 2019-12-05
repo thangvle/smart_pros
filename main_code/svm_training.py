@@ -14,7 +14,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 
-from tqdm import tqdm_notebook as tqdm
+#from tqdm import tqdm_notebook as tqdm
 
 # data visualization
 import  seaborn as sns
@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 
 # import data
-emg_df = pd.read_csv(r'/home/spencelab/Documents/smart_pros/main_code/emg_hold_cup.csv')
+emg_df = pd.read_csv(r'/Users/nhok2303/Desktop/github/smart_pros/main_code/emg_hold_cup.csv')
 #print(emg_rest)
 #sc = StandardScaler()
 x = emg_df.drop('label', axis=1)
@@ -67,7 +67,7 @@ print(pca.explained_variance_ratio_)
 
 # SVM training session
 
-C = 2.0
+C = 1.0
 #clf_rbf = svm.SVC(kernel='rbf')
 #svc = svm.SVC(kernel='linear', C=C).fit(x_train, y_train)
 rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=C).fit(x_train_pca, y_train)
