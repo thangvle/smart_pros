@@ -17,14 +17,19 @@ void loop() {
     // read the oldest byte in the serial buffer:
     incomingByte = Serial.read();
     // if it's a capital H (ASCII 72), turn on the LED:
-    if (incomingByte == 'A') {
+    if (incomingByte == 'H') {
       digitalWrite(ledPin3, HIGH);
       digitalWrite(ledPin4, LOW);
     }
     // if it's an L (ASCII 76) turn off the LED:
-    if (incomingByte == 'R') {
+    if (incomingByte == 'G') {
       digitalWrite(ledPin3, LOW);
       digitalWrite(ledPin4, HIGH);
+      
+    }
+    if (incomingByte == 'R') {
+     digitalWrite(ledPin3, LOW);
+     digitalWrite(ledPin4, LOW);
     }
   }
 }
