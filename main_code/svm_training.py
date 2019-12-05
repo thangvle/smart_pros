@@ -20,12 +20,13 @@ from sklearn.model_selection import GridSearchCV
 import  seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
+from mpl_toolkits import mplot3d
 
 # import data
-emg_df = pd.read_csv(r'/Users/nhok2303/Desktop/github/smart_pros/main_code/emg_hold_cup.csv')
+emg_df = pd.read_csv(r'/home/spencelab/Documents/smart_pros/main_code/emg_hold_cup.csv')
 #print(emg_rest)
 #sc = StandardScaler()
-x = emg_df.drop('label', axis=1)
+x = emg_df.drop(['label', 'x', 'y', 'z'], axis=1)
 y = emg_df['label']
 h = 0.02
 
@@ -36,22 +37,22 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, rando
 
 
 sc = StandardScaler()
-x_train_lda = sc.fit_transform(x_train)
-x_test = sc.transform(x_test)
+x_train_scale = sc.fit_transform(x_train)
+x_test_scale = sc.transform(x_test)
 
-'''
+
 lda = LDA(n_components=2)
-x_train_lda = lda.fit_transform(x_train, y_train)
-x_test_lda = lda.transform(x_test)
+x_train_lda = lda.fit_transform(x_train_scale, y_train)
+x_test_lda = lda.transform(x_test_scale)
 
 train_data_lda = pd.DataFrame(x_train_lda)
 train_data_lda['label'] = y_train
-train_data_lda.columns = ['LD1', 'LD2', 'label']
-'''
+train_data_lda.columns = ['LDA1', 'LDA2', 'label']
 
+print(train_data_lda)
 
 # PCA
-
+'''
 x_train = sc.fit_transform(x_train)
 x_test = sc.fit_transform(x_test)
 
@@ -63,6 +64,7 @@ train_data_pca['label'] = y_train
 train_data_pca.columns = ['PCA1', 'PCA2', 'label']
 
 print(pca.explained_variance_ratio_)
+'''
 # initialize x and y
 
 # SVM training session
@@ -70,18 +72,18 @@ print(pca.explained_variance_ratio_)
 C = 1.0
 #clf_rbf = svm.SVC(kernel='rbf')
 #svc = svm.SVC(kernel='linear', C=C).fit(x_train, y_train)
-rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=C).fit(x_train_pca, y_train)
+rbf_svc = svm.SVC(kernel='rbf', gamma=0.7, C=C).fit(x_train_lda, y_train)
 #poly_svc = svm.SVC(kernel='poly', degree=3, C=C).fit(x_train, y_train)
 
-y_pred = rbf_svc.predict(x_test_pca)
-print(x_test_pca)
+y_pred = rbf_svc.predict(x_test_lda)
+print(x_test_lda)
 print(y_pred)
 #print(rbf_svc.support_vectors_)
 
 
 
 # visualization
-
+'''
 def plot_svm(model, ax = None, plot_support=True):
     if ax == None:
         ax = plt.gca()
@@ -103,16 +105,23 @@ def plot_svm(model, ax = None, plot_support=True):
                    s=300, linewidth=1, facecolors='none');
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
+'''
 
 markers = ['s', 'x','o']
 colors = ['r', 'b','g']
 #plot_svm(rbf_svc)
-sns.lmplot(x="PCA1", y="PCA2", data=train_data_pca, hue='label', markers=markers,fit_reg=False,legend=False)
-print(pca.explained_variance_ratio_)
-plt.legend(loc='upper center')
+sns.lmplot(x="LDA1", y="LDA2", data=train_data_lda, hue='label', markers=markers,fit_reg=False,legend=True)
+#print(pca.explained_variance_ratio_)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(emg_df['muscle1'].iloc[0:10000],emg_df['muscle2'].iloc[10000:20000])
+ax.set_xlabel('muscle1')
+ax.set_ylabel('muscle2')
 
 plt.show()
 
+plt.show()
 
 
 '''
@@ -153,7 +162,8 @@ for i, clf in enumerate((svc, lin_svc, rbf_svc, poly_svc)):
 plt.show()
 '''
 # save svm model
-
+'''
 filename = 'emg_svm_model.pkl'
 pickle.dump(rbf_svc, open(filename, 'wb'))
 print('svm model saved')
+'''
