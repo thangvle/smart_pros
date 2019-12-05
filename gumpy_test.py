@@ -1,18 +1,20 @@
 import numpy as np
 import pandas as pd
-import gumpy.Dataset
+
 
 
 import matplotlib.pyplot as plt
 import sys, os, os.path
 
-base_dir = '../..'
-subject = 'S2'
-data_low = gumpy.nst_emg.NST_EMG(base_dir, subject, 'low')
-data_high = gumpy.nst_emg.NST_EMG(base_dir, subject, 'high')
-
+base_dir = '/home/spencelab/Documents/smart_pros/hand_jupyter_notebook/emg_hold_cup.csv'
+df = pd.read_csv(base_dir)
 # Finally, load the dataset
-data_low.load()
-data_high.load()
+#data_low.load()
+#data_high.load()
 
-print(data_low)
+print(df)
+window_size = 0.2
+window_shift = 0.05
+fs = 512
+x1 = gumpy.signal.rms(df, fs, window_size, window_shift)
+print(x1)
