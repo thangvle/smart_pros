@@ -57,11 +57,11 @@ def data_collection(df):
 
         df = df.append(pd.Series([data[0], data[1], data[2], data[3], data[4], data[5]], index=df.columns), ignore_index=True)
         last_row = df.tail(1).values
+        if (np.array_equal(last_row, idle)):
+            # delete last row of [0,0,0,0,0,0]
+            df.drop(df.tail(1).index, inplace=True)
         if (np.array_equal(last_row, training)):
-            if (np.array_equal(last_row, idle)):
-                # label idle
-                df = df.assign(label=['0'])
-            elif (np.array_equal(last_row, pinch)):
+            if (np.array_equal(last_row, pinch)):
                 # pinch mode
                 df = df.assign(label=['1'])
             elif (np.array_equal(last_row, grip)):
